@@ -1,0 +1,49 @@
+reef_no,replicate,perimeter_m,area_m2,imagery_resolution_m,date,method,platform,imagery_type,provider,instrument,observer,notes
+20,1,163.28,1941.6,0.15,20130115,imagery,GE,aerial,unknown,unknown,,"calculate the area, not transform"
+20,2,161.94,1991.54,0.15,20130115,imagery,GE,aerial,unknown,unknown,,"calculate the area, not transform"
+20,3,162.05,2015.74,0.15,20130115,imagery,GE,aerial,unknown,unknown,,"calculate the area, not transform"
+20,1,143.76,1521.6,0.5,20130822,imagery,GE,satellite,DigitalGlobe,WorldView-1/2,,"calculate the area, not transform"
+20,2,135.41,1389.13,0.5,20130822,imagery,GE,satellite,DigitalGlobe,WorldView-1/2,,"calculate the area, not transform"
+20,3,136.48,1383.24,0.5,20130822,imagery,GE,satellite,DigitalGlobe,WorldView-1/2,,"calculate the area, not transform"
+20,1,133.26,1336.53,1,20110108,imagery,GE,satellite,DigitalGlobe,Ikonos,,"calculate the area, not transform"
+20,2,131.17,1284.45,1,20110108,imagery,GE,satellite,DigitalGlobe,Ikonos,,"calculate the area, not transform"
+20,3,130.91,1250.08,1,20110108,imagery,GE,satellite,DigitalGlobe,Ikonos,,"calculate the area, not transform"
+20,1,146.31,1595.01,2,20030412,imagery,GE,satellite,DigitalGlobe,EarlyBird-1 (?),,"calculate the area, not transform"
+20,2,137.84,1404.58,2,20030412,imagery,GE,satellite,DigitalGlobe,EarlyBird-1 (?),,"calculate the area, not transform"
+20,3,143.54,1501.92,2,20030412,imagery,GE,satellite,DigitalGlobe,EarlyBird-1 (?),,"calculate the area, not transform"
+20,1,165.33,2064.72,3,20190316,imagery,PlanetExplorer,satellite,Planet,PlanetScope (formerly Dove CubeSats),,"calculate the area, not transform"
+20,2,151.34,2188.77,3,20190316,imagery,PlanetExplorer,satellite,Planet,PlanetScope (formerly Dove CubeSats),,"calculate the area, not transform"
+20,3,157.79,2083.64,3,20190316,imagery,PlanetExplorer,satellite,Planet,PlanetScope (formerly Dove CubeSats),,"calculate the area, not transform"
+20,1,126.55,1281.9,5,20160208,imagery,PlanetExplorer,satellite,Planet,RapidEye,,"calculate the area, not transform"
+20,2,125.31,1204.34,5,20160208,imagery,PlanetExplorer,satellite,Planet,RapidEye,,"calculate the area, not transform"
+20,3,124.98,1370.41,5,20160208,imagery,PlanetExplorer,satellite,Planet,RapidEye,,"calculate the area, not transform"
+20,1,,0,10,20180307,imagery,PlanetExplorer,satellite,ESA,Sentinel-2,,
+20,2,,0,10,20180307,imagery,PlanetExplorer,satellite,ESA,Sentinel-2,,
+20,3,,0,10,20180307,imagery,PlanetExplorer,satellite,ESA,Sentinel-2,,
+20,1,,0,30,20190328,imagery,PlanetExplorer,satellite,USGS,Landsat 8,,
+20,2,,0,30,20190328,imagery,PlanetExplorer,satellite,USGS,Landsat 8,,
+20,3,,0,30,20190328,imagery,PlanetExplorer,satellite,USGS,Landsat 8,,
+22,1,129.39,1221.43,0.15,20130115,imagery,GE,aerial,unknown,unknown,,"calculate the area, not transform"
+22,2,126.86,1216.07,0.15,20130115,imagery,GE,aerial,unknown,unknown,,"calculate the area, not transform"
+22,3,126.19,1224.11,0.15,20130115,imagery,GE,aerial,unknown,unknown,,"calculate the area, not transform"
+22,1,131.55,1316.02,0.5,20130822,imagery,GE,satellite,DigitalGlobe,WorldView-1/2,,"calculate the area, not transform"
+22,2,129.54,1260.88,0.5,20130822,imagery,GE,satellite,DigitalGlobe,WorldView-1/2,,"calculate the area, not transform"
+22,3,117.98,1080.73,0.5,20130822,imagery,GE,satellite,DigitalGlobe,WorldView-1/2,,"calculate the area, not transform"
+22,1,120.25,1113.05,1,20110108,imagery,GE,satellite,DigitalGlobe,Ikonos,,"calculate the area, not transform"
+22,2,118.4,1058.18,1,20110108,imagery,GE,satellite,DigitalGlobe,Ikonos,,"calculate the area, not transform"
+22,3,110.6,918.4,1,20110108,imagery,GE,satellite,DigitalGlobe,Ikonos,,"calculate the area, not transform"
+22,1,126.43,1191.69,2,20030412,imagery,GE,satellite,DigitalGlobe,EarlyBird-1 (not 100% sure if this sat's imagery is in Google Earth,,"calculate the area, not transform"
+22,2,124.37,1170.19,2,20030412,imagery,GE,satellite,DigitalGlobe,EarlyBird-1 (not 100% sure if this sat's imagery is in Google Earth,,"calculate the area, not transform"
+22,3,133.15,1289.23,2,20030412,imagery,GE,satellite,DigitalGlobe,EarlyBird-1 (not 100% sure if this sat's imagery is in Google Earth,,"calculate the area, not transform"
+22,1,123.86,1296.36,3,20190316,imagery,PlanetExplorer,satellite,Planet,PlanetScope (formerly Dove CubeSats),,"calculate the area, not transform"
+22,2,123.54,1223.78,3,20190316,imagery,PlanetExplorer,satellite,Planet,PlanetScope (formerly Dove CubeSats),,"calculate the area, not transform"
+22,3,122.36,1155.09,3,20190316,imagery,PlanetExplorer,satellite,Planet,PlanetScope (formerly Dove CubeSats),,"calculate the area, not transform"
+22,1,110.75,731.82,5,20160208,imagery,PlanetExplorer,satellite,Planet,RapidEye,,"calculate the area, not transform"
+22,2,101.44,684.26,5,20160208,imagery,PlanetExplorer,satellite,Planet,RapidEye,,"calculate the area, not transform"
+22,3,109.64,725.97,5,20160208,imagery,PlanetExplorer,satellite,Planet,RapidEye,,"calculate the area, not transform"
+22,1,,,10,20180307,imagery,PlanetExplorer,satellite,ESA,Sentinel-2,,
+22,2,,,10,20180307,imagery,PlanetExplorer,satellite,ESA,Sentinel-2,,
+22,3,,,10,20180307,imagery,PlanetExplorer,satellite,ESA,Sentinel-2,,
+22,1,,,30,20190328,imagery,PlanetExplorer,satellite,USGS,Landsat 8,,
+22,2,,,30,20190328,imagery,PlanetExplorer,satellite,USGS,Landsat 8,,
+22,3,,,30,20190328,imagery,PlanetExplorer,satellite,USGS,Landsat 8,,

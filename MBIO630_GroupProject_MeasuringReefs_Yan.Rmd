@@ -1,0 +1,267 @@
+---
+title: "MBIO630_GroupProject_MeasuringReefs_Yan"
+author: "Yan"
+date: "`r format(Sys.Date())`" 
+output: 
+  github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(sciplot)
+library(vegan)
+library(plotrix)
+library(plyr)
+library(cowplot)
+```
+
+
+```{r data import, echo=TRUE, results='hide', include=FALSE}
+################################################
+# import data, observe structure
+################################################
+
+data<-read.csv("data/MeasuringReefs_Master.csv", header = TRUE)
+
+names(data)
+head(data)
+data$year<-substr(data$date,0,4) # add a column for year only
+
+plot_data_20 <- 
+  data %>%
+  filter(reef_no == 20) 
+plot_data_22 <- 
+  data %>%
+  filter(reef_no == 22) #separate data from two reefs
+
+```
+
+
+```{r data explore-1, echo=TRUE, results='hide', fig.height=5, fig.width=5, fig.align='center'}
+
+################################################
+# explore patterns
+################################################
+
+# Effect of method
+boxplot(area_m2~method, data=plot_data_20, na.ignore=TRUE, col="lightgrey",
+     ylab="Patch reef area (m^2)", 
+     xlab="Method", 
+     main="Area versus method #20")
+dev.copy(png,"output/method_area_effect_20.png")    # can change to .png, etc.; can change size to incr resolution
+dev.off()
+
+boxplot(area_m2~method, data=plot_data_22, na.ignore=TRUE, col="lightgrey",
+     ylab="Patch reef area (m^2)", 
+     xlab="Method", 
+     main="Area versus method #22")
+dev.copy(png,"output/method_area_effect_22.png")    # can change to .png, etc.; can change size to incr resolution
+dev.off()
+
+aggregate(plot_data_20$area_m2, by=list(type=plot_data_20$method), mean, na.rm = TRUE)
+aggregate(plot_data_20$area_m2, by=list(type=plot_data_20$method), sd, na.rm = TRUE)
+
+aggregate(plot_data_22$area_m2, by=list(type=plot_data_22$method), mean, na.rm = TRUE)
+aggregate(plot_data_22$area_m2, by=list(type=plot_data_22$method), sd, na.rm = TRUE)
+
+
+# Effect of imagery resolution
+
+## on area
+plot(area_m2~imagery_resolution_m, data=plot_data_20, col="slategrey",
+     xlim=c(0,10),
+     ylim=c(0,4000),
+     xlab="Imagery spatial resolution (m)", 
+     ylab="Patch reef area (m^2)", 
+     main="Area versus imagery resolution #20")
+res.area.lm=lm(area_m2 ~ imagery_resolution_m, data=plot_data_20)
+abline(res.area.lm, col = "black")
+summary(res.area.lm)
+dev.copy(png,"output/resolution_area_effect_20.png")    
+dev.off()
+
+plot(area_m2~imagery_resolution_m, data=plot_data_22, col="slategrey",
+     xlim=c(0,10),
+     ylim=c(0,4000),
+     xlab="Imagery spatial resolution (m)", 
+     ylab="Patch reef area (m^2)", 
+     main="Area versus imagery resolution #22")
+res.area.lm=lm(area_m2 ~ imagery_resolution_m, data=plot_data_22)
+abline(res.area.lm, col = "black")
+summary(res.area.lm)
+dev.copy(png,"output/resolution_area_effect_22.png")    
+dev.off()
+
+## on perimeter
+plot(perimeter_m~imagery_resolution_m, data=plot_data_20, col="slategrey",
+     xlim=c(0,10),
+     ylim=c(0,250),
+     xlab="Imagery spatial resolution (m)", 
+     ylab="Patch reef perimeter (m)", 
+     main="Perimeter versus imagery resolution #20")
+res.perim.lm=lm(perimeter_m ~ imagery_resolution_m, data=plot_data_20)
+abline(res.perim.lm, col = "black")
+summary(res.perim.lm)
+dev.copy(png,"output/resolution_perimeter_effect_20.png")    
+dev.off()
+
+plot(perimeter_m~imagery_resolution_m, data=plot_data_22, col="slategrey",
+     xlim=c(0,10),
+     ylim=c(0,250),
+     xlab="Imagery spatial resolution (m)", 
+     ylab="Patch reef perimeter (m)", 
+     main="Perimeter versus imagery resolution #22")
+res.perim.lm=lm(perimeter_m ~ imagery_resolution_m, data=plot_data_22)
+abline(res.perim.lm, col = "black")
+summary(res.perim.lm)
+dev.copy(png,"output/resolution_perimeter_effect_22.png")    
+dev.off()
+
+
+# Effect of date (i.e., do patch reefs measurably grow or shrink over time?)
+plot(area_m2~as.numeric(year), data=plot_data_20, col="slategrey",
+     xlab="Year", 
+     ylab="Patch reef area (m^2)", 
+     main="Area versus year #20")
+date.area.lm=lm(area_m2 ~ as.numeric(year), data=plot_data_20)
+abline(date.area.lm, col = "black")
+summary(date.area.lm)
+dev.copy(png,"output/date_area_effect_20.png")    
+dev.off()
+
+plot(area_m2~as.numeric(year), data=plot_data_22, col="slategrey",
+     xlab="Year", 
+     ylab="Patch reef area (m^2)", 
+     main="Area versus year #22")
+date.area.lm=lm(area_m2 ~ as.numeric(year), data=plot_data_22)
+abline(date.area.lm, col = "black")
+summary(date.area.lm)
+dev.copy(png,"output/date_area_effect_22.png")    
+dev.off()
+
+#看不出成長 因為不同年份解析度不同，而且越近的年份解析度越差
+
+```
+
+Now, let's see if there's anything going on with time when imagery resolution is considered:
+
+```{r data analysis-1, echo=TRUE, results='hide'}
+
+################################################
+# analyze data
+################################################
+
+# Effects of imagery resolution + year
+
+## Note: interpretation below is for my test data; your data's results may be different
+data$year <- as.numeric(data$year) 
+res.year.lm=lm(area_m2 ~ imagery_resolution_m * year, data=data) # run interaction model
+summary(res.year.lm)      # overall model is significant, but not indiv parameters (ie, predictor variables)
+anova(res.year.lm)        # run ANOVA to look at predictor variables in isolation
+drop1(res.year.lm, test="F")  # use drop1 function to see which parameter can be dropped (test="F" adds type 
+                          # II ANOVA)
+res.year.lm2 <- lm(area_m2 ~ imagery_resolution_m + year, data=data)
+                          # re-run model w/o interaction term that drop1 said to drop
+summary(res.year.lm2)     # model now says both predictor variables are significant
+drop1(res.year.lm2, test="F") # drop1 says neither remaining variable can be dropped
+
+#相乘的都沒有顯著
+#相加的可看出解析度影響最明顯，可丟掉年分降低AIC
+
+```
+
+Or reef identity (reef number):
+
+```{r data analysis-2, echo=TRUE, results='hide'}
+
+################################################
+# analyze data
+################################################
+
+# Effects of imagery resolution + reef ID
+res.reefID.lm=lm(area_m2 ~ imagery_resolution_m * reef_no, data=data)
+summary(res.reefID.lm)
+drop1(res.reefID.lm, test="F")
+
+res.reefID.lm=lm(area_m2 ~ imagery_resolution_m + reef_no, data=data)
+summary(res.reefID.lm)
+drop1(res.reefID.lm, test="F")
+
+#ID與解析度兩者都不可丟
+              
+```
+
+```{r data analysis-3, echo=TRUE, results='hide'}
+
+################################################
+# analyze the trade-offs between the different imagery
+################################################
+
+boxplot(imagery_resolution_m~platform, data=data, na.ignore=TRUE, col="lightgrey",
+     ylab="Resolution (m/pix)", 
+     xlab="Platform", 
+     main="Resolution versus Platform")
+
+
+```
+
+## Part IV: Discussion questions
+
+* Which method did you find to be more variable among groups/individuals - field or imagery?
+
+Imagery is more variable than field among groups.
+The reason might be due to the multiple data sources of imagery, such as aerial and satellites. The resolution of images, filming angle (nadir or tilted) and quality of images (weather, sunshine intensity or quality of optical sensors) among multiple data sources might cause uncertainty of measurement and increase its variability. 
+
+Two patch reefs show similar pattern of their method differences. 
+
+* How did imagery resolution affect your measurements?
+
+Lower imagery resolution tend to overestimate patch reef area. Moreover, larger patch reef (#20) tend to be overestimated more obviously. 
+However, we need more data across different size of reefs to make the latter conclusion.
+
+* What are the trade-offs between field vs imagery measurements?
+
+|Measurements            | pros       | cons    | 
+|:---                 | :---          | :---      |
+|Field              | lower variability, can be more precise and accurate, can get the data whenever we want | time-consumed, investment of our own measuring equipment (such as handheld GPS and boat) is needed   |
+|Imagery            | free data resources are available, measurement can be verified by different people and multiple times,  can be measured rapidly | higher variability, need extra cost to get higher quality data, desired data at certain time might be limited|
+
+* What are the trade-offs between the different imagery a) platforms and b) resolutions?
+
+|a) Platforms            | pros       | cons    | 
+|:---                 | :---          | :---      |
+|Google Earth              | free, have higher resolution, can save the measurement results and study sites,  | database of images is smaller, no filter for searching images,  Graphical User Interface is out-of-date  |
+|Planet Exlorer            | database of images is larger, have filter for searching images, Graphical User Interface is fancy | registration is needed to access data and might be rejected, the measurement tools is inconvenient, many images have low resolution |
+
+|b) Resolution            | pros       | cons    | 
+|:---                 | :---          | :---      |
+|High | measurement can be more precise and accurate, can measure smaller research targets | data might be  expensive or limited, larger storage space is needed |
+|Low | data is easy to access, can be shown smoothly in computer | measurement might have high variability, cannot measure smaller research targets |
+
+
+* 能否看出礁體的生長率
+無法，影像解析度最好需要保持一致，或是在變異小到仍能辨識生長率的範圍內
+須注意不能被影像的解析度誤導
+
+* 不同人之間的測量差異
+
+* 不同因子對線性回歸模型(測量面積)的影響，解析度與年份 以解析度影響最為顯著 因躍進的年份解析度越差 而越差的解析度又會造成結果高估所致，至於解析度與ID 兩者同樣重要
+
+## Part V: Write-up
+
+* When you’re finished with your analyses, go back and give each figure a short caption 
+* Structure your .Rmd file as a ‘mini-paper’ with a bit of very brief text (~2-5 sentences) for each of the usual paper sections: 
+    + Introduction (summarize what you’re doing with this mini-project)
+    + Methods (what you did, both in the field and the lab)
+    + Results (here’s where your figures and stats outputs will go)
+    + Discussion (mention any interesting findings and, if you have time, briefly relate this to any previous literature using a similar approach/asking similar questions)	
+* Upload your project folder to Github and send the link to Liz via Slack when complete (this is how you'll turn it in)
+    + A helpful step-by-step guide to version control with git/Github is [here](https://jmadinlab.github.io/data_code_tutorial/). 
+    + If you have trouble with git/Github after following the steps in this guide, reach out to one of the instructors. 
+* Some tips: 
+    + If you're new to RMarkdown, use the cheat sheets in the info folder to help with your write-up
+    + If you're new to writing manuscripts, [this is a handy guide](https://conservationbytes.com/2012/10/22/how-to-write-a-scientific-paper/) that lays out the process in clear steps (not all steps will apply to this write-up, but most will for your independent project write-up)
+    
+* This exercise will help you see the value of using R Markdown to write papers!!! 
+

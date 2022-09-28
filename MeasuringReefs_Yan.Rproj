@@ -1,0 +1,23 @@
+---
+title: "MeasuringReefs_Yan"
+author: "Yan"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r data import, echo=TRUE, results='hide', include=FALSE}
+################################################
+# import data, observe structure
+################################################
+
+data<-read.csv("data/MeasuringReefs_EM.csv", header = TRUE)
+
+names(data)
+head(data)
+data$year<-substr(data$date,0,4) # add a column for year only
+```
+

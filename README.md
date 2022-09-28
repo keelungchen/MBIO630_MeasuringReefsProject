@@ -1,0 +1,1 @@
+This contains the instructions and example data analyses of the module "Measuring Reefs" of MBIO603.
