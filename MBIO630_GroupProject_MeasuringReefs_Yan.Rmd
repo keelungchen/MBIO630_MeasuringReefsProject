@@ -17,6 +17,7 @@ As the reference shown below:
 <em>https://github.com/MBIO630-Remote-Sensing-2022/MBIO630_GroupProject_MeasuringReefs/blob/main/MBIO630_GroupProject_MeasuringReefs.md</em> 
 
 ## Result
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
@@ -50,7 +51,8 @@ plot_data_22 <-
 
 ```
 
-Effect of method. Two patch reefs show similar pattern of their method differences. 
+Effect of method. Two patch reefs show similar pattern of their method differences.
+
 ```{r data explore-1, echo=FALSE, results='hide', fig.height=5, fig.width=5, fig.align='center', warning=FALSE}
 
 ################################################
@@ -92,6 +94,7 @@ aggregate(plot_data_22$area_m2, by=list(type=plot_data_22$method), sd, na.rm = T
 ```
 
 Effect of imagery resolution on area and perimeter
+
 ```{r data explore-2, echo=FALSE, results='hide', fig.height=5, fig.width=5, fig.align='center', warning=FALSE, message=FALSE}
 # Effect of imagery resolution
 
@@ -201,6 +204,7 @@ drop1(res.year.lm2, test="F") # drop1 says neither remaining variable can be dro
 Or reef identity (reef number):
 
 The result shows that **both "reef ID" and "resolution" should not be dropped**.
+
 ```{r data analysis-2, echo=FALSE, results= 'hold'}
 
 ################################################
@@ -218,6 +222,7 @@ drop1(res.reefID.lm, test="F")
 ```
 
 Analyze the trade-offs between the different imagery
+
 ```{r data analysis-3, echo=FALSE, results='hide', fig.height=5, fig.width=5, fig.align='center', warning=FALSE}
 
 ################################################
@@ -231,6 +236,7 @@ boxplot(imagery_resolution_m~platform, data=data, na.ignore=TRUE, col="lightgrey
 ```
 
 Analyze the difference between observers. We can find that there are **three outliers** in patch reef #20. Apart from that, the **measurement between different observers is consistent**. 
+
 ```{r data analysis-4, echo=FALSE, results='hide', fig.height=5, fig.width=5, fig.align='center', warning=FALSE}
 
 ################################################

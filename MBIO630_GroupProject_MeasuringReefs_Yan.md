@@ -15,9 +15,11 @@ As the reference shown below:
 
 Effect of method. Two patch reefs show similar pattern of their method
 differences.
+
 <img src="MBIO630_GroupProject_MeasuringReefs_Yan_files/figure-gfm/data explore-1-1.png" style="display: block; margin: auto;" />
 
 Effect of imagery resolution on area and perimeter
+
 <img src="MBIO630_GroupProject_MeasuringReefs_Yan_files/figure-gfm/data explore-2-1.png" style="display: block; margin: auto;" />
 
 Effect of date (i.e., do patch reefs measurably grow or shrink over
@@ -107,11 +109,13 @@ dropped**.
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 Analyze the trade-offs between the different imagery
+
 <img src="MBIO630_GroupProject_MeasuringReefs_Yan_files/figure-gfm/data analysis-3-1.png" style="display: block; margin: auto;" />
 
 Analyze the difference between observers. We can find that there are
 **three outliers** in patch reef \#20. Apart from that, the
 **measurement between different observers is consistent**.
+
 <img src="MBIO630_GroupProject_MeasuringReefs_Yan_files/figure-gfm/data analysis-4-1.png" style="display: block; margin: auto;" />
 
 ## Discussion
