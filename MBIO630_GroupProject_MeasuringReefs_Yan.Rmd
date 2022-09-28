@@ -1,11 +1,22 @@
 ---
-title: "MBIO630_GroupProject_MeasuringReefs_Yan"
+title: "GroupProject_MeasuringReefs_Yan"
 author: "Yan"
 date: "`r format(Sys.Date())`" 
 output: 
   github_document
 ---
 
+## Introduction
+
+
+
+## Method
+
+As the reference shown below: 
+
+<em>https://github.com/MBIO630-Remote-Sensing-2022/MBIO630_GroupProject_MeasuringReefs/blob/main/MBIO630_GroupProject_MeasuringReefs.md</em> 
+
+## Result
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
@@ -14,10 +25,12 @@ library(vegan)
 library(plotrix)
 library(plyr)
 library(cowplot)
+library(ggplot2)
+library(fishualize)
 ```
 
 
-```{r data import, echo=TRUE, results='hide', include=FALSE}
+```{r data import, echo=TRUE, results='hold', include=FALSE}
 ################################################
 # import data, observe structure
 ################################################
@@ -25,8 +38,8 @@ library(cowplot)
 data<-read.csv("data/MeasuringReefs_Master.csv", header = TRUE)
 
 names(data)
-head(data)
 data$year<-substr(data$date,0,4) # add a column for year only
+head(data)
 
 plot_data_20 <- 
   data %>%
@@ -37,116 +50,132 @@ plot_data_22 <-
 
 ```
 
-
-```{r data explore-1, echo=TRUE, results='hide', fig.height=5, fig.width=5, fig.align='center'}
+Effect of method. Two patch reefs show similar pattern of their method differences. 
+```{r data explore-1, echo=FALSE, results='hide', fig.height=5, fig.width=5, fig.align='center', warning=FALSE}
 
 ################################################
 # explore patterns
 ################################################
 
 # Effect of method
-boxplot(area_m2~method, data=plot_data_20, na.ignore=TRUE, col="lightgrey",
-     ylab="Patch reef area (m^2)", 
-     xlab="Method", 
-     main="Area versus method #20")
+
+p1_1 <- ggplot(data = plot_data_20, aes(x = method, y = area_m2, fill = method, na.rm = TRUE)) +
+    geom_boxplot()+
+    ylab("Patch reef area (m^2)")+ 
+  xlab(element_blank())+
+  ggtitle("Area versus method #20")+
+  theme_light()+
+  scale_fill_grey()+
+  theme(legend.position = "none")
 dev.copy(png,"output/method_area_effect_20.png")    # can change to .png, etc.; can change size to incr resolution
 dev.off()
 
-boxplot(area_m2~method, data=plot_data_22, na.ignore=TRUE, col="lightgrey",
-     ylab="Patch reef area (m^2)", 
-     xlab="Method", 
-     main="Area versus method #22")
+p1_2 <- ggplot(data = plot_data_22, aes(x = method, y = area_m2, fill = method, na.rm = TRUE)) +
+    geom_boxplot()+
+    xlab("Method")+
+    ylab("Patch reef area (m^2)")+ 
+  ggtitle("Area versus method #22")+
+  theme_light()+
+  scale_fill_grey()+
+  theme(legend.position = "none")
 dev.copy(png,"output/method_area_effect_22.png")    # can change to .png, etc.; can change size to incr resolution
 dev.off()
 
+p1 <- plot_grid(p1_1,p1_2, nrow = 2,align="h",labels=c())
+p1
+                
 aggregate(plot_data_20$area_m2, by=list(type=plot_data_20$method), mean, na.rm = TRUE)
 aggregate(plot_data_20$area_m2, by=list(type=plot_data_20$method), sd, na.rm = TRUE)
 
 aggregate(plot_data_22$area_m2, by=list(type=plot_data_22$method), mean, na.rm = TRUE)
 aggregate(plot_data_22$area_m2, by=list(type=plot_data_22$method), sd, na.rm = TRUE)
+```
 
-
+Effect of imagery resolution on area and perimeter
+```{r data explore-2, echo=FALSE, results='hide', fig.height=5, fig.width=5, fig.align='center', warning=FALSE, message=FALSE}
 # Effect of imagery resolution
 
 ## on area
-plot(area_m2~imagery_resolution_m, data=plot_data_20, col="slategrey",
-     xlim=c(0,10),
-     ylim=c(0,4000),
-     xlab="Imagery spatial resolution (m)", 
-     ylab="Patch reef area (m^2)", 
-     main="Area versus imagery resolution #20")
-res.area.lm=lm(area_m2 ~ imagery_resolution_m, data=plot_data_20)
-abline(res.area.lm, col = "black")
-summary(res.area.lm)
-dev.copy(png,"output/resolution_area_effect_20.png")    
-dev.off()
 
-plot(area_m2~imagery_resolution_m, data=plot_data_22, col="slategrey",
-     xlim=c(0,10),
-     ylim=c(0,4000),
-     xlab="Imagery spatial resolution (m)", 
-     ylab="Patch reef area (m^2)", 
-     main="Area versus imagery resolution #22")
-res.area.lm=lm(area_m2 ~ imagery_resolution_m, data=plot_data_22)
-abline(res.area.lm, col = "black")
-summary(res.area.lm)
-dev.copy(png,"output/resolution_area_effect_22.png")    
-dev.off()
+p2_1 <- ggplot(data = plot_data_20, aes(x = imagery_resolution_m, y = area_m2, na.rm = TRUE)) +
+    geom_point(shape=21)+
+    xlab("Imagery spatial resolution (m)")+
+    ylab("Patch reef area (m^2)")+ 
+  ggtitle("Area vs resolution \n #20")+
+  geom_smooth(method="lm", colour="black", size=0.5)+
+  theme_light()+
+  theme(legend.position = "none")
+
+p2_2 <- ggplot(data = plot_data_22, aes(x = imagery_resolution_m, y = area_m2, na.rm = TRUE)) +
+    geom_point(shape=21)+
+    xlab("Imagery spatial resolution (m)")+
+    ylab("Patch reef area (m^2)")+ 
+  ggtitle("Area vs resolution \n #22")+
+  geom_smooth(method="lm", colour="black", size=0.5)+
+  theme_light()+
+  theme(legend.position = "none")
 
 ## on perimeter
-plot(perimeter_m~imagery_resolution_m, data=plot_data_20, col="slategrey",
-     xlim=c(0,10),
-     ylim=c(0,250),
-     xlab="Imagery spatial resolution (m)", 
-     ylab="Patch reef perimeter (m)", 
-     main="Perimeter versus imagery resolution #20")
-res.perim.lm=lm(perimeter_m ~ imagery_resolution_m, data=plot_data_20)
-abline(res.perim.lm, col = "black")
-summary(res.perim.lm)
-dev.copy(png,"output/resolution_perimeter_effect_20.png")    
-dev.off()
 
-plot(perimeter_m~imagery_resolution_m, data=plot_data_22, col="slategrey",
-     xlim=c(0,10),
-     ylim=c(0,250),
-     xlab="Imagery spatial resolution (m)", 
-     ylab="Patch reef perimeter (m)", 
-     main="Perimeter versus imagery resolution #22")
-res.perim.lm=lm(perimeter_m ~ imagery_resolution_m, data=plot_data_22)
-abline(res.perim.lm, col = "black")
-summary(res.perim.lm)
-dev.copy(png,"output/resolution_perimeter_effect_22.png")    
-dev.off()
+p2_3 <- ggplot(data = plot_data_20, aes(x = imagery_resolution_m, y = perimeter_m, na.rm = TRUE)) +
+    geom_point(shape=21)+
+    xlab("Imagery spatial resolution (m)")+
+    ylab("Patch reef perimeter (m)")+ 
+  ggtitle("Perimeter vs resolution \n #20")+
+  geom_smooth(method="lm", colour="black", size=0.5)+
+  theme_light()+
+  theme(legend.position = "none")
 
+p2_4 <- ggplot(data = plot_data_22, aes(x = imagery_resolution_m, y = perimeter_m, na.rm = TRUE)) +
+    geom_point(shape=21)+
+    xlab("Imagery spatial resolution (m)")+
+    ylab("Patch reef perimeter (m)")+ 
+  ggtitle("Perimeter vs resolution \n #22")+
+  geom_smooth(method="lm", colour="black", size=0.5)+
+  theme_light()+
+  theme(legend.position = "none")
 
-# Effect of date (i.e., do patch reefs measurably grow or shrink over time?)
-plot(area_m2~as.numeric(year), data=plot_data_20, col="slategrey",
-     xlab="Year", 
-     ylab="Patch reef area (m^2)", 
-     main="Area versus year #20")
-date.area.lm=lm(area_m2 ~ as.numeric(year), data=plot_data_20)
-abline(date.area.lm, col = "black")
-summary(date.area.lm)
-dev.copy(png,"output/date_area_effect_20.png")    
-dev.off()
+p2 <- plot_grid(p2_1,p2_2,p2_3,p2_4, nrow = 2,align="h",labels=c())
+p2
 
-plot(area_m2~as.numeric(year), data=plot_data_22, col="slategrey",
-     xlab="Year", 
-     ylab="Patch reef area (m^2)", 
-     main="Area versus year #22")
-date.area.lm=lm(area_m2 ~ as.numeric(year), data=plot_data_22)
-abline(date.area.lm, col = "black")
-summary(date.area.lm)
-dev.copy(png,"output/date_area_effect_22.png")    
-dev.off()
+```
+
+\n Effect of date (i.e., do patch reefs measurably grow or shrink over time?)
+
+**We can not measure the growth of patch reefs in this data set** due to low resolution and its overestimation in the recent years. If the data is usable, these two patch reefs should show similar growth rate (slope in the fig) because they grew in adjacent area. 
+
+```{r data explore-3, echo=FALSE, results='hide', fig.height=5, fig.width=5, fig.align='center', warning=FALSE, message=FALSE}
+
+p3_1 <- ggplot(data = plot_data_20, aes(x = as.numeric(year), y = area_m2, na.rm = TRUE)) +
+    geom_point(shape=21)+
+    xlab("Year")+
+    ylab("Patch reef area (m^2)")+ 
+  ggtitle("Area versus year #20")+
+  geom_smooth(method="lm", colour="black", size=0.5)+
+  theme_light()+
+  theme(legend.position = "none")
+
+p3_2 <- ggplot(data = plot_data_22, aes(x = as.numeric(year), y = area_m2, na.rm = TRUE)) +
+    geom_point(shape=21)+
+    xlab("Year")+
+    ylab("Patch reef area (m^2)")+ 
+  ggtitle("Area versus year #22")+
+  geom_smooth(method="lm", colour="black", size=0.5)+
+  theme_light()+
+  theme(legend.position = "none")
+
+p3 <- plot_grid(p3_1,p3_2, nrow = 2,align="h",labels=c())
+p3
 
 #看不出成長 因為不同年份解析度不同，而且越近的年份解析度越差
 
 ```
 
-Now, let's see if there's anything going on with time when imagery resolution is considered:
+\n Now, let's see if there's anything going on with time when imagery resolution is considered:
 
-```{r data analysis-1, echo=TRUE, results='hide'}
+The result shows that **"Resolution" have more influence** in linear regression model. Drop "year" can decrease AIC and have better model. In addition, the **y ~ x1+x2** model is better than y ~ x1*x2 model. 
+
+```{r data analysis-1, echo=FALSE, results='hold'}
 
 ################################################
 # analyze data
@@ -156,43 +185,40 @@ Now, let's see if there's anything going on with time when imagery resolution is
 
 ## Note: interpretation below is for my test data; your data's results may be different
 data$year <- as.numeric(data$year) 
-res.year.lm=lm(area_m2 ~ imagery_resolution_m * year, data=data) # run interaction model
-summary(res.year.lm)      # overall model is significant, but not indiv parameters (ie, predictor variables)
-anova(res.year.lm)        # run ANOVA to look at predictor variables in isolation
-drop1(res.year.lm, test="F")  # use drop1 function to see which parameter can be dropped (test="F" adds type 
+#res.year.lm=lm(area_m2 ~ imagery_resolution_m * year, data=data) # run interaction model
+#summary(res.year.lm)      # overall model is significant, but not indiv parameters (ie, predictor variables)
+#anova(res.year.lm)        # run ANOVA to look at predictor variables in isolation
+#drop1(res.year.lm, test="F")  # use drop1 function to see which parameter can be dropped (test="F" adds type 
                           # II ANOVA)
 res.year.lm2 <- lm(area_m2 ~ imagery_resolution_m + year, data=data)
                           # re-run model w/o interaction term that drop1 said to drop
 summary(res.year.lm2)     # model now says both predictor variables are significant
 drop1(res.year.lm2, test="F") # drop1 says neither remaining variable can be dropped
 
-#相乘的都沒有顯著
-#相加的可看出解析度影響最明顯，可丟掉年分降低AIC
-
 ```
+
 
 Or reef identity (reef number):
 
-```{r data analysis-2, echo=TRUE, results='hide'}
+The result shows that **both "reef ID" and "resolution" should not be dropped**.
+```{r data analysis-2, echo=FALSE, results= 'hold'}
 
 ################################################
 # analyze data
 ################################################
 
 # Effects of imagery resolution + reef ID
-res.reefID.lm=lm(area_m2 ~ imagery_resolution_m * reef_no, data=data)
-summary(res.reefID.lm)
-drop1(res.reefID.lm, test="F")
+#res.reefID.lm=lm(area_m2 ~ imagery_resolution_m * reef_no, data=data)
+#summary(res.reefID.lm)
+#drop1(res.reefID.lm, test="F")
 
 res.reefID.lm=lm(area_m2 ~ imagery_resolution_m + reef_no, data=data)
 summary(res.reefID.lm)
 drop1(res.reefID.lm, test="F")
-
-#ID與解析度兩者都不可丟
-              
 ```
 
-```{r data analysis-3, echo=TRUE, results='hide'}
+Analyze the trade-offs between the different imagery
+```{r data analysis-3, echo=FALSE, results='hide', fig.height=5, fig.width=5, fig.align='center', warning=FALSE}
 
 ################################################
 # analyze the trade-offs between the different imagery
@@ -202,32 +228,58 @@ boxplot(imagery_resolution_m~platform, data=data, na.ignore=TRUE, col="lightgrey
      ylab="Resolution (m/pix)", 
      xlab="Platform", 
      main="Resolution versus Platform")
-
-
 ```
 
-## Part IV: Discussion questions
+Analyze the difference between observers. We can find that there are **three outliers** in patch reef #20. Apart from that, the **measurement between different observers is consistent**. 
+```{r data analysis-4, echo=FALSE, results='hide', fig.height=5, fig.width=5, fig.align='center', warning=FALSE}
 
-* Which method did you find to be more variable among groups/individuals - field or imagery?
+################################################
+# analyze the difference between observers
+################################################
 
-Imagery is more variable than field among groups.
-The reason might be due to the multiple data sources of imagery, such as aerial and satellites. The resolution of images, filming angle (nadir or tilted) and quality of images (weather, sunshine intensity or quality of optical sensors) among multiple data sources might cause uncertainty of measurement and increase its variability. 
+p4_1 <- ggplot(data = plot_data_20, aes(x = observer, y = area_m2, fill = observer, na.rm = TRUE)) +
+    geom_boxplot()+
+    xlab("observer")+
+    ylab("Patch reef area (m^2)")+ 
+  ggtitle("Area versus method #20")+
+  theme_light()+
+  scale_fill_grey()+
+  theme(legend.position = "none")
 
-Two patch reefs show similar pattern of their method differences. 
+p4_2 <- ggplot(data = plot_data_22, aes(x = observer, y = area_m2, fill = observer, na.rm = TRUE)) +
+    geom_boxplot()+
+    xlab("observer")+
+    ylab("Patch reef area (m^2)")+ 
+  ggtitle("Area versus method #22")+
+  theme_light()+
+  scale_fill_grey()+
+  theme(legend.position = "none")
 
-* How did imagery resolution affect your measurements?
+p4 <- plot_grid(p4_1,p4_2, nrow = 2,align="h",labels=c())
+p4
+```
 
-Lower imagery resolution tend to overestimate patch reef area. Moreover, larger patch reef (#20) tend to be overestimated more obviously. 
-However, we need more data across different size of reefs to make the latter conclusion.
+## Discussion 
 
-* What are the trade-offs between field vs imagery measurements?
+#### 1.Which method did you find to be more variable among groups/individuals - field or imagery?
+
+* Imagery is more variable than field among groups.
+* The reason might be due to the multiple data sources of imagery, such as aerial and satellites. The resolution of images, filming angle (nadir or tilted) and quality of images (weather, sunshine intensity or quality of optical sensors) among multiple data sources might cause uncertainty of measurement and increase its variability. 
+
+
+#### 2.How did imagery resolution affect your measurements?
+
+Lower imagery resolution tend to overestimate patch reef area. Moreover, larger patch reef (#20) tend to be overestimated more obviously. Surface area would have more overestimation than perimeter. Or these might be just due to the outliers in #20. 
+We need more data across different size of reefs to make sure whether larger size would have more overestimation.
+
+#### 3.What are the trade-offs between field vs imagery measurements?
 
 |Measurements            | pros       | cons    | 
 |:---                 | :---          | :---      |
 |Field              | lower variability, can be more precise and accurate, can get the data whenever we want | time-consumed, investment of our own measuring equipment (such as handheld GPS and boat) is needed   |
 |Imagery            | free data resources are available, measurement can be verified by different people and multiple times,  can be measured rapidly | higher variability, need extra cost to get higher quality data, desired data at certain time might be limited|
 
-* What are the trade-offs between the different imagery a) platforms and b) resolutions?
+#### 4.What are the trade-offs between the different imagery a) platforms and b) resolutions?
 
 |a) Platforms            | pros       | cons    | 
 |:---                 | :---          | :---      |
@@ -240,28 +292,6 @@ However, we need more data across different size of reefs to make the latter con
 |Low | data is easy to access, can be shown smoothly in computer | measurement might have high variability, cannot measure smaller research targets |
 
 
-* 能否看出礁體的生長率
-無法，影像解析度最好需要保持一致，或是在變異小到仍能辨識生長率的範圍內
-須注意不能被影像的解析度誤導
-
-* 不同人之間的測量差異
-
-* 不同因子對線性回歸模型(測量面積)的影響，解析度與年份 以解析度影響最為顯著 因躍進的年份解析度越差 而越差的解析度又會造成結果高估所致，至於解析度與ID 兩者同樣重要
-
-## Part V: Write-up
-
-* When you’re finished with your analyses, go back and give each figure a short caption 
-* Structure your .Rmd file as a ‘mini-paper’ with a bit of very brief text (~2-5 sentences) for each of the usual paper sections: 
-    + Introduction (summarize what you’re doing with this mini-project)
-    + Methods (what you did, both in the field and the lab)
-    + Results (here’s where your figures and stats outputs will go)
-    + Discussion (mention any interesting findings and, if you have time, briefly relate this to any previous literature using a similar approach/asking similar questions)	
-* Upload your project folder to Github and send the link to Liz via Slack when complete (this is how you'll turn it in)
-    + A helpful step-by-step guide to version control with git/Github is [here](https://jmadinlab.github.io/data_code_tutorial/). 
-    + If you have trouble with git/Github after following the steps in this guide, reach out to one of the instructors. 
-* Some tips: 
-    + If you're new to RMarkdown, use the cheat sheets in the info folder to help with your write-up
-    + If you're new to writing manuscripts, [this is a handy guide](https://conservationbytes.com/2012/10/22/how-to-write-a-scientific-paper/) that lays out the process in clear steps (not all steps will apply to this write-up, but most will for your independent project write-up)
-    
-* This exercise will help you see the value of using R Markdown to write papers!!! 
+#### 5.How should we measure the growth rate of reefs in imagery?
+The resolution of data should keep consistent. Or the variation that is caused by resolution should be smaller than growth rate.  
 

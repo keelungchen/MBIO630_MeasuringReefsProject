@@ -1,240 +1,147 @@
-MBIO630_GroupProject_MeasuringReefs_Yan
+GroupProject_MeasuringReefs_Yan
 ================
 Yan
 2022-09-27
 
-``` r
-################################################
-# explore patterns
-################################################
+## Introduction
 
-# Effect of method
-boxplot(area_m2~method, data=plot_data_20, na.ignore=TRUE, col="lightgrey",
-     ylab="Patch reef area (m^2)", 
-     xlab="Method", 
-     main="Area versus method #20")
-```
+## Method
 
+As the reference shown below:
+
+<em><https://github.com/MBIO630-Remote-Sensing-2022/MBIO630_GroupProject_MeasuringReefs/blob/main/MBIO630_GroupProject_MeasuringReefs.md></em>
+
+## Result
+
+Effect of method. Two patch reefs show similar pattern of their method
+differences.
 <img src="MBIO630_GroupProject_MeasuringReefs_Yan_files/figure-gfm/data explore-1-1.png" style="display: block; margin: auto;" />
 
-``` r
-dev.copy(png,"output/method_area_effect_20.png")    # can change to .png, etc.; can change size to incr resolution
-dev.off()
+Effect of imagery resolution on area and perimeter
+<img src="MBIO630_GroupProject_MeasuringReefs_Yan_files/figure-gfm/data explore-2-1.png" style="display: block; margin: auto;" />
 
-boxplot(area_m2~method, data=plot_data_22, na.ignore=TRUE, col="lightgrey",
-     ylab="Patch reef area (m^2)", 
-     xlab="Method", 
-     main="Area versus method #22")
-```
+Effect of date (i.e., do patch reefs measurably grow or shrink over
+time?)
 
-<img src="MBIO630_GroupProject_MeasuringReefs_Yan_files/figure-gfm/data explore-1-2.png" style="display: block; margin: auto;" />
+**We can not measure the growth of patch reefs in this data set** due to
+low resolution and its overestimation in the recent years. If the data
+is usable, these two patch reefs should show similar growth rate (slope
+in the fig) because they grew in adjacent area.
 
-``` r
-dev.copy(png,"output/method_area_effect_22.png")    # can change to .png, etc.; can change size to incr resolution
-dev.off()
-
-aggregate(plot_data_20$area_m2, by=list(type=plot_data_20$method), mean, na.rm = TRUE)
-aggregate(plot_data_20$area_m2, by=list(type=plot_data_20$method), sd, na.rm = TRUE)
-
-aggregate(plot_data_22$area_m2, by=list(type=plot_data_22$method), mean, na.rm = TRUE)
-aggregate(plot_data_22$area_m2, by=list(type=plot_data_22$method), sd, na.rm = TRUE)
-
-
-# Effect of imagery resolution
-
-## on area
-plot(area_m2~imagery_resolution_m, data=plot_data_20, col="slategrey",
-     xlim=c(0,10),
-     ylim=c(0,4000),
-     xlab="Imagery spatial resolution (m)", 
-     ylab="Patch reef area (m^2)", 
-     main="Area versus imagery resolution #20")
-res.area.lm=lm(area_m2 ~ imagery_resolution_m, data=plot_data_20)
-abline(res.area.lm, col = "black")
-```
-
-<img src="MBIO630_GroupProject_MeasuringReefs_Yan_files/figure-gfm/data explore-1-3.png" style="display: block; margin: auto;" />
-
-``` r
-summary(res.area.lm)
-dev.copy(png,"output/resolution_area_effect_20.png")    
-dev.off()
-
-plot(area_m2~imagery_resolution_m, data=plot_data_22, col="slategrey",
-     xlim=c(0,10),
-     ylim=c(0,4000),
-     xlab="Imagery spatial resolution (m)", 
-     ylab="Patch reef area (m^2)", 
-     main="Area versus imagery resolution #22")
-res.area.lm=lm(area_m2 ~ imagery_resolution_m, data=plot_data_22)
-abline(res.area.lm, col = "black")
-```
-
-<img src="MBIO630_GroupProject_MeasuringReefs_Yan_files/figure-gfm/data explore-1-4.png" style="display: block; margin: auto;" />
-
-``` r
-summary(res.area.lm)
-dev.copy(png,"output/resolution_area_effect_22.png")    
-dev.off()
-
-## on perimeter
-plot(perimeter_m~imagery_resolution_m, data=plot_data_20, col="slategrey",
-     xlim=c(0,10),
-     ylim=c(0,250),
-     xlab="Imagery spatial resolution (m)", 
-     ylab="Patch reef perimeter (m)", 
-     main="Perimeter versus imagery resolution #20")
-res.perim.lm=lm(perimeter_m ~ imagery_resolution_m, data=plot_data_20)
-abline(res.perim.lm, col = "black")
-```
-
-<img src="MBIO630_GroupProject_MeasuringReefs_Yan_files/figure-gfm/data explore-1-5.png" style="display: block; margin: auto;" />
-
-``` r
-summary(res.perim.lm)
-dev.copy(png,"output/resolution_perimeter_effect_20.png")    
-dev.off()
-
-plot(perimeter_m~imagery_resolution_m, data=plot_data_22, col="slategrey",
-     xlim=c(0,10),
-     ylim=c(0,250),
-     xlab="Imagery spatial resolution (m)", 
-     ylab="Patch reef perimeter (m)", 
-     main="Perimeter versus imagery resolution #22")
-res.perim.lm=lm(perimeter_m ~ imagery_resolution_m, data=plot_data_22)
-abline(res.perim.lm, col = "black")
-```
-
-<img src="MBIO630_GroupProject_MeasuringReefs_Yan_files/figure-gfm/data explore-1-6.png" style="display: block; margin: auto;" />
-
-``` r
-summary(res.perim.lm)
-dev.copy(png,"output/resolution_perimeter_effect_22.png")    
-dev.off()
-
-
-# Effect of date (i.e., do patch reefs measurably grow or shrink over time?)
-plot(area_m2~as.numeric(year), data=plot_data_20, col="slategrey",
-     xlab="Year", 
-     ylab="Patch reef area (m^2)", 
-     main="Area versus year #20")
-date.area.lm=lm(area_m2 ~ as.numeric(year), data=plot_data_20)
-abline(date.area.lm, col = "black")
-```
-
-<img src="MBIO630_GroupProject_MeasuringReefs_Yan_files/figure-gfm/data explore-1-7.png" style="display: block; margin: auto;" />
-
-``` r
-summary(date.area.lm)
-dev.copy(png,"output/date_area_effect_20.png")    
-dev.off()
-
-plot(area_m2~as.numeric(year), data=plot_data_22, col="slategrey",
-     xlab="Year", 
-     ylab="Patch reef area (m^2)", 
-     main="Area versus year #22")
-date.area.lm=lm(area_m2 ~ as.numeric(year), data=plot_data_22)
-abline(date.area.lm, col = "black")
-```
-
-<img src="MBIO630_GroupProject_MeasuringReefs_Yan_files/figure-gfm/data explore-1-8.png" style="display: block; margin: auto;" />
-
-``` r
-summary(date.area.lm)
-dev.copy(png,"output/date_area_effect_22.png")    
-dev.off()
-
-#看不出成長 因為不同年份解析度不同，而且越近的年份解析度越差
-```
+<img src="MBIO630_GroupProject_MeasuringReefs_Yan_files/figure-gfm/data explore-3-1.png" style="display: block; margin: auto;" />
 
 Now, let’s see if there’s anything going on with time when imagery
 resolution is considered:
 
-``` r
-################################################
-# analyze data
-################################################
+The result shows that **“Resolution” have more influence** in linear
+regression model. Drop “year” can decrease AIC and have better model. In
+addition, the **y \~ x1+x2** model is better than y \~ x1\*x2 model.
 
-# Effects of imagery resolution + year
-
-## Note: interpretation below is for my test data; your data's results may be different
-data$year <- as.numeric(data$year) 
-res.year.lm=lm(area_m2 ~ imagery_resolution_m * year, data=data) # run interaction model
-summary(res.year.lm)      # overall model is significant, but not indiv parameters (ie, predictor variables)
-anova(res.year.lm)        # run ANOVA to look at predictor variables in isolation
-drop1(res.year.lm, test="F")  # use drop1 function to see which parameter can be dropped (test="F" adds type 
-                          # II ANOVA)
-res.year.lm2 <- lm(area_m2 ~ imagery_resolution_m + year, data=data)
-                          # re-run model w/o interaction term that drop1 said to drop
-summary(res.year.lm2)     # model now says both predictor variables are significant
-drop1(res.year.lm2, test="F") # drop1 says neither remaining variable can be dropped
-
-#相乘的都沒有顯著
-#相加的可看出解析度影響最明顯，可丟掉年分降低AIC
-```
+    ## 
+    ## Call:
+    ## lm(formula = area_m2 ~ imagery_resolution_m + year, data = data)
+    ## 
+    ## Residuals:
+    ##     Min      1Q  Median      3Q     Max 
+    ## -2851.2  -340.1   -55.8   281.3  7194.6 
+    ## 
+    ## Coefficients:
+    ##                       Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)          9.274e+02  2.512e+04   0.037    0.971    
+    ## imagery_resolution_m 9.373e+01  1.084e+01   8.644 8.71e-16 ***
+    ## year                 1.321e-01  1.249e+01   0.011    0.992    
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 898.6 on 234 degrees of freedom
+    ##   (53 observations deleted due to missingness)
+    ## Multiple R-squared:  0.2745, Adjusted R-squared:  0.2683 
+    ## F-statistic: 44.27 on 2 and 234 DF,  p-value: < 2.2e-16
+    ## 
+    ## Single term deletions
+    ## 
+    ## Model:
+    ## area_m2 ~ imagery_resolution_m + year
+    ##                      Df Sum of Sq       RSS    AIC F value    Pr(>F)    
+    ## <none>                            188949488 3226.6                      
+    ## imagery_resolution_m  1  60328126 249277614 3290.2 74.7119 8.707e-16 ***
+    ## year                  1        90 188949578 3224.6  0.0001    0.9916    
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 Or reef identity (reef number):
 
-``` r
-################################################
-# analyze data
-################################################
+The result shows that **both “reef ID” and “resolution” should not be
+dropped**.
 
-# Effects of imagery resolution + reef ID
-res.reefID.lm=lm(area_m2 ~ imagery_resolution_m * reef_no, data=data)
-summary(res.reefID.lm)
-drop1(res.reefID.lm, test="F")
+    ## 
+    ## Call:
+    ## lm(formula = area_m2 ~ imagery_resolution_m + reef_no, data = data)
+    ## 
+    ## Residuals:
+    ##     Min      1Q  Median      3Q     Max 
+    ## -2519.9  -223.8   -22.0   223.9  6951.0 
+    ## 
+    ## Coefficients:
+    ##                      Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)          8185.298   1142.848   7.162 1.02e-11 ***
+    ## imagery_resolution_m   90.543      9.266   9.772  < 2e-16 ***
+    ## reef_no              -332.590     54.277  -6.128 3.75e-09 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 834.2 on 234 degrees of freedom
+    ##   (53 observations deleted due to missingness)
+    ## Multiple R-squared:  0.3748, Adjusted R-squared:  0.3695 
+    ## F-statistic: 70.15 on 2 and 234 DF,  p-value: < 2.2e-16
+    ## 
+    ## Single term deletions
+    ## 
+    ## Model:
+    ## area_m2 ~ imagery_resolution_m + reef_no
+    ##                      Df Sum of Sq       RSS    AIC F value    Pr(>F)    
+    ## <none>                            162822660 3191.3                      
+    ## imagery_resolution_m  1  66441672 229264332 3270.4  95.486 < 2.2e-16 ***
+    ## reef_no               1  26126918 188949578 3224.6  37.548 3.749e-09 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-res.reefID.lm=lm(area_m2 ~ imagery_resolution_m + reef_no, data=data)
-summary(res.reefID.lm)
-drop1(res.reefID.lm, test="F")
+Analyze the trade-offs between the different imagery
+<img src="MBIO630_GroupProject_MeasuringReefs_Yan_files/figure-gfm/data analysis-3-1.png" style="display: block; margin: auto;" />
 
-#ID與解析度兩者都不可丟
-```
+Analyze the difference between observers. We can find that there are
+**three outliers** in patch reef \#20. Apart from that, the
+**measurement between different observers is consistent**.
+<img src="MBIO630_GroupProject_MeasuringReefs_Yan_files/figure-gfm/data analysis-4-1.png" style="display: block; margin: auto;" />
 
-``` r
-################################################
-# analyze the trade-offs between the different imagery
-################################################
+## Discussion
 
-boxplot(imagery_resolution_m~platform, data=data, na.ignore=TRUE, col="lightgrey",
-     ylab="Resolution (m/pix)", 
-     xlab="Platform", 
-     main="Resolution versus Platform")
-```
+#### 1.Which method did you find to be more variable among groups/individuals - field or imagery?
 
-![](MBIO630_GroupProject_MeasuringReefs_Yan_files/figure-gfm/data%20analysis-3-1.png)<!-- -->
+-   Imagery is more variable than field among groups.
+-   The reason might be due to the multiple data sources of imagery,
+    such as aerial and satellites. The resolution of images, filming
+    angle (nadir or tilted) and quality of images (weather, sunshine
+    intensity or quality of optical sensors) among multiple data sources
+    might cause uncertainty of measurement and increase its variability.
 
-## Part IV: Discussion questions
-
--   Which method did you find to be more variable among
-    groups/individuals - field or imagery?
-
-Imagery is more variable than field among groups. The reason might be
-due to the multiple data sources of imagery, such as aerial and
-satellites. The resolution of images, filming angle (nadir or tilted)
-and quality of images (weather, sunshine intensity or quality of optical
-sensors) among multiple data sources might cause uncertainty of
-measurement and increase its variability.
-
-Two patch reefs show similar pattern of their method differences.
-
--   How did imagery resolution affect your measurements?
+#### 2.How did imagery resolution affect your measurements?
 
 Lower imagery resolution tend to overestimate patch reef area. Moreover,
-larger patch reef (#20) tend to be overestimated more obviously.
-However, we need more data across different size of reefs to make the
-latter conclusion.
+larger patch reef (#20) tend to be overestimated more obviously. Surface
+area would have more overestimation than perimeter. Or these might be
+just due to the outliers in \#20. We need more data across different
+size of reefs to make sure whether larger size would have more
+overestimation.
 
--   What are the trade-offs between field vs imagery measurements?
+#### 3.What are the trade-offs between field vs imagery measurements?
 
 | Measurements | pros                                                                                                                           | cons                                                                                                          |
 |:-------------|:-------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------|
 | Field        | lower variability, can be more precise and accurate, can get the data whenever we want                                         | time-consumed, investment of our own measuring equipment (such as handheld GPS and boat) is needed            |
 | Imagery      | free data resources are available, measurement can be verified by different people and multiple times, can be measured rapidly | higher variability, need extra cost to get higher quality data, desired data at certain time might be limited |
 
--   What are the trade-offs between the different imagery a) platforms
-    and b) resolutions?
+#### 4.What are the trade-offs between the different imagery a) platforms and b) resolutions?
 
 | a\) Platforms  | pros                                                                                              | cons                                                                                                                                |
 |:---------------|:--------------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------|
@@ -246,42 +153,7 @@ latter conclusion.
 | High           | measurement can be more precise and accurate, can measure smaller research targets | data might be expensive or limited, larger storage space is needed               |
 | Low            | data is easy to access, can be shown smoothly in computer                          | measurement might have high variability, cannot measure smaller research targets |
 
--   能否看出礁體的生長率
-    無法，影像解析度最好需要保持一致，或是在變異小到仍能辨識生長率的範圍內
-    須注意不能被影像的解析度誤導
+#### 5.How should we measure the growth rate of reefs in imagery?
 
--   不同人之間的測量差異
-
--   不同因子對線性回歸模型(測量面積)的影響，解析度與年份
-    以解析度影響最為顯著 因躍進的年份解析度越差
-    而越差的解析度又會造成結果高估所致，至於解析度與ID 兩者同樣重要
-
-## Part V: Write-up
-
--   When you’re finished with your analyses, go back and give each
-    figure a short caption
--   Structure your .Rmd file as a ‘mini-paper’ with a bit of very brief
-    text (\~2-5 sentences) for each of the usual paper sections:
-    -   Introduction (summarize what you’re doing with this
-        mini-project)
-    -   Methods (what you did, both in the field and the lab)
-    -   Results (here’s where your figures and stats outputs will go)
-    -   Discussion (mention any interesting findings and, if you have
-        time, briefly relate this to any previous literature using a
-        similar approach/asking similar questions)
--   Upload your project folder to Github and send the link to Liz via
-    Slack when complete (this is how you’ll turn it in)
-    -   A helpful step-by-step guide to version control with git/Github
-        is [here](https://jmadinlab.github.io/data_code_tutorial/).
-    -   If you have trouble with git/Github after following the steps in
-        this guide, reach out to one of the instructors.
--   Some tips:
-    -   If you’re new to RMarkdown, use the cheat sheets in the info
-        folder to help with your write-up
-    -   If you’re new to writing manuscripts, [this is a handy
-        guide](https://conservationbytes.com/2012/10/22/how-to-write-a-scientific-paper/)
-        that lays out the process in clear steps (not all steps will
-        apply to this write-up, but most will for your independent
-        project write-up)
--   This exercise will help you see the value of using R Markdown to
-    write papers!!!
+The resolution of data should keep consistent. Or the variation that is
+caused by resolution should be smaller than growth rate.
